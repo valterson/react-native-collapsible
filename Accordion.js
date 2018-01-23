@@ -9,7 +9,8 @@ const VIEW_PROPS = Object.keys(ViewPropTypes);
 
 export default class Accordion extends Component {
   static propTypes = {
-    sections: PropTypes.array.isRequired,
+    item: PropTypes.object.isRequired,
+    itemIndex: PropTypes.number.isRequired,
     renderHeader: PropTypes.func.isRequired,
     renderContent: PropTypes.func.isRequired,
     onChange: PropTypes.func,
@@ -82,33 +83,29 @@ export default class Accordion extends Component {
 
     return (
       <View {...viewProps}>
-        {this.props.sections.map((section, key) => (
-          <View key={key}>
-            <Touchable
-              onPress={() => this._toggleSection(key)}
-              underlayColor={this.props.underlayColor}
-              {...this.props.touchableProps}
-            >
-              {this.props.renderHeader(
-                section,
-                key,
-                this.state.activeSection === key,
-                this.props.sections
-              )}
-            </Touchable>
-            <Collapsible
-              collapsed={this.state.activeSection !== key}
-              {...collapsibleProps}
-            >
-              {this.props.renderContent(
-                section,
-                key,
-                this.state.activeSection === key,
-                this.props.sections
-              )}
-            </Collapsible>
-          </View>
-        ))}
+        <View key={this.props.itemIndex}>
+          <Touchable
+            onPress={() => this._toggleSection(this.props.itemIndex)}
+            underlayColor={this.props.underlayColor}
+            {...this.props.touchableProps}
+          >
+            {this.props.renderHeader(
+              this.props.item,
+              this.props.itemIndex,
+              this.state.activeSection === this.props.itemIndex,
+            )}
+          </Touchable>
+          <Collapsible
+            collapsed={this.state.activeSection !== this.props.itemIndex}
+            {...collapsibleProps}
+          >
+            {this.props.renderContent(
+              this.props.item,
+              this.props.itemIndex,
+              this.state.activeSection === this.props.itemIndex,
+            )}
+          </Collapsible>
+        </View>
       </View>
     );
   }
